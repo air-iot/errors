@@ -24,6 +24,15 @@ func (r *ResponseError) Error() string {
 	return r.Message
 }
 
+func NewError(code int, err error, msg string, args ...interface{}) error {
+	res := &ResponseError{
+		Code:    code,
+		Message: fmt.Sprintf(msg, args...),
+		ERR:     errors.WithStack(err),
+	}
+	return res
+}
+
 // UnWrapResponse 解包响应错误
 func UnWrapResponse(err error) *ResponseError {
 	if v, ok := err.(*ResponseError); ok {
