@@ -24,11 +24,27 @@ func (r *ResponseError) Error() string {
 	return r.Message
 }
 
-func NewError(code int, err error, msg string, args ...interface{}) error {
+func NewError(code int, err error) error {
+	res := &ResponseError{
+		Code: code,
+		ERR:  errors.WithStack(err),
+	}
+	return res
+}
+
+func NewMsg(code int, msg string, args ...interface{}) error {
 	res := &ResponseError{
 		Code:    code,
 		Message: fmt.Sprintf(msg, args...),
-		ERR:     errors.WithStack(err),
+	}
+	return res
+}
+
+func NewErrorMsg(code int, err error, msg string, args ...interface{}) error {
+	res := &ResponseError{
+		Code:    code,
+		ERR:     err,
+		Message: fmt.Sprintf(msg, args...),
 	}
 	return res
 }
