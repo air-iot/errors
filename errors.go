@@ -30,7 +30,7 @@ var (
 	ErrNoPerm          = NewResponse(401, 401, nil, "无访问权限")
 	ErrInvalidToken    = NewResponse(401, 401, nil, "令牌失效")
 	ErrNotToken        = NewResponse(401, 401, nil, "未找到令牌")
-	ErrNotFound        = WrapResponseWithField(fmt.Errorf("资源不存在"), 404, "", 100030001, nil, "资源不存在")
+	ErrNotFound        = WrapResponseWithField(fmt.Errorf("资源不存在"), 404, "", 100030002, nil, "资源不存在")
 	ErrMethodNotAllow  = NewResponse(405, 405, nil, "方法不被允许")
 	ErrTooManyRequests = NewResponse(429, 429, nil, "请求过于频繁")
 	ErrInternalServer  = NewResponse(500, 500, nil, "服务器发生错误")
