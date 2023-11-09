@@ -33,7 +33,7 @@ func TestNewMsg(t *testing.T) {
 func TestNewErrorMsg(t *testing.T) {
 	e := NewErrorMsg(1, fmt.Errorf("err1"), "a,%d", 2)
 	t.Log(e.Error())
-	var target error = &ResponseError{}
+	var target = &ResponseError{}
 	t.Log(As(e, &target))
 	t.Log(errors.As(e, &target))
 }
