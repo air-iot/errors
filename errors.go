@@ -1,7 +1,9 @@
 package errors
 
 import (
+	gError "errors"
 	"fmt"
+
 	"github.com/pkg/errors"
 )
 
@@ -14,6 +16,10 @@ var (
 	WithMessage  = errors.WithMessage
 	WithMessagef = errors.WithMessagef
 	Is           = errors.Is
+	Unwrap       = errors.Unwrap
+	Errorf       = errors.Errorf
+	Cause        = errors.Cause
+	As           = gError.As
 )
 
 // 定义错误
