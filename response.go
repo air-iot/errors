@@ -24,6 +24,17 @@ func (r *ResponseError) Error() string {
 	return r.Message
 }
 
+func (r *ResponseError) Cause() error {
+	if r.ERR != nil {
+		return r.ERR
+	}
+	return fmt.Errorf(r.Message)
+}
+
+func (r *ResponseError) Unwrap() error {
+	return r.ERR
+}
+
 func NewError(code int, err error) error {
 	res := &ResponseError{
 		Code: code,
