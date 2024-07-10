@@ -3,8 +3,7 @@ package errors
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/pkg/errors"
+	"strings"
 )
 
 // ResponseError 定义响应错误
@@ -19,7 +18,11 @@ type ResponseError struct {
 
 func (r *ResponseError) Error() string {
 	if r.ERR != nil {
-		return r.ERR.Error()
+		if r.Message == "" {
+			return strings.ToValidUTF8(r.ERR.Error(), "")
+		} else {
+			return fmt.Sprintf("%s: %s", r.Message, strings.ToValidUTF8(r.ERR.Error(), ""))
+		}
 	}
 	return r.Message
 }
@@ -38,7 +41,7 @@ func (r *ResponseError) Unwrap() error {
 func NewError(code int, err error) error {
 	res := &ResponseError{
 		Code: code,
-		ERR:  errors.WithStack(err),
+		ERR:  err,
 	}
 	return res
 }
@@ -73,7 +76,7 @@ func WrapResponseWithField(err error, statusCode int, field string, code int, da
 	res := &ResponseError{
 		Code:       code,
 		Message:    fmt.Sprintf(msg, args...),
-		ERR:        errors.WithStack(err),
+		ERR:        err,
 		StatusCode: statusCode,
 		Data:       data,
 		Field:      field,
@@ -124,16 +127,7 @@ func Wrap500Response(err error, msg string, args ...interface{}) error {
 
 // NewResponse 创建响应错误
 func NewResponse(statusCode, code int, data interface{}, msg string, args ...interface{}) error {
-	res := &ResponseError{
-		Code:       code,
-		Message:    fmt.Sprintf(msg, args...),
-		StatusCode: statusCode,
-		Data:       data,
-	}
-	if res.ERR == nil {
-		res.ERR = fmt.Errorf(msg, args...)
-	}
-	return res
+	return NewResponseWithField(statusCode, "", code, data, msg, args...)
 }
 
 // NewResponseWithField 创建响应错误包含错误字段
@@ -145,9 +139,9 @@ func NewResponseWithField(statusCode int, field string, code int, data interface
 		Data:       data,
 		Message:    fmt.Sprintf(msg, args...),
 	}
-	if res.ERR == nil {
-		res.ERR = fmt.Errorf(msg, args...)
-	}
+	//if res.ERR == nil {
+	//	res.ERR = fmt.Errorf(msg, args...)
+	//}
 	return res
 }
 
