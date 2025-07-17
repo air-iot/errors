@@ -3,7 +3,6 @@ package errors
 import (
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 // ResponseError 定义响应错误
@@ -17,14 +16,23 @@ type ResponseError struct {
 }
 
 func (r *ResponseError) Error() string {
-	if r.ERR != nil {
-		if r.Message == "" {
-			return strings.ToValidUTF8(r.ERR.Error(), "")
-		} else {
-			return fmt.Sprintf("%s: %s", r.Message, strings.ToValidUTF8(r.ERR.Error(), ""))
+	if r.ERR == nil {
+		if r.Message != "" {
+			return r.Message
 		}
+		// 提供一个默认消息，避免返回空字符串
+		return "unknown error"
 	}
-	return r.Message
+
+	if r.Message == "" {
+		return r.ERR.Error()
+	}
+
+	if r.Message == r.ERR.Error() {
+		return r.Message
+	}
+
+	return fmt.Sprintf("%s: %s", r.Message, r.ERR.Error())
 }
 
 func (r *ResponseError) Cause() error {
